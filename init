@@ -1,0 +1,34 @@
+#!/bin/sh
+# devtmpfs does not get automounted for initramfs
+/bin/mount -t devtmpfs devtmpfs /dev
+/bin/mount -t proc proc /proc -o nosuid,noexec,nodev
+
+echo "Waiting 10s for usb disk..." &> /dev/kmsg
+sleep 10
+
+echo "e2fsck -p /dev/sda1" &> /dev/kmsg
+/usr/sbin/e2fsck -p /dev/sda1 &> /dev/kmsg
+# Check if e2fsck ret code is 4, it needs human intervention
+# and then we launch busybox init + sshd allowing remote
+# connection.
+#echo "coucou" &> /dev/kmsg
+#ret=${PIPESTATUS[0]} # dash has this variable :)
+#echo $ret &> /dev/kmsg
+#echo "$?" &> /dev/kmsg
+#echo $?   &> /dev/kmsg
+ret=$?
+if [ $ret -gt 0 ]; then
+	if [ $ret -eq 4 ]; then
+		exec /sbin/init
+	fi
+	if [ $ret -eq 2 ]; then
+		echo "e2fsck corrections needs reboot..." &> /dev/kmsg
+		/sbin/reboot
+	fi	
+	# Other errors are not handled.
+fi
+
+echo "Mounting rootfs" &> /dev/kmsg
+mkdir -p /new_root &> /dev/kmsg
+/bin/mount /dev/sda1 /new_root &> /dev/kmsg
+exec switch_root /new_root /sbin/init
