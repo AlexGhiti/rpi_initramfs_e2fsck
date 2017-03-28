@@ -1,4 +1,5 @@
 #!/bin/sh
+
 # devtmpfs does not get automounted for initramfs
 /bin/mount -t devtmpfs devtmpfs /dev
 /bin/mount -t proc proc /proc -o nosuid,noexec,nodev
@@ -8,14 +9,10 @@ sleep 10
 
 echo "e2fsck -p /dev/sda1" &> /dev/kmsg
 /usr/sbin/e2fsck -p /dev/sda1 &> /dev/kmsg
-# Check if e2fsck ret code is 4, it needs human intervention
+
+# TODO: Check if e2fsck ret code is 4, it needs human intervention
 # and then we launch busybox init + sshd allowing remote
 # connection.
-#echo "coucou" &> /dev/kmsg
-#ret=${PIPESTATUS[0]} # dash has this variable :)
-#echo $ret &> /dev/kmsg
-#echo "$?" &> /dev/kmsg
-#echo $?   &> /dev/kmsg
 ret=$?
 if [ $ret -gt 0 ]; then
 	if [ $ret -eq 4 ]; then

@@ -372,7 +372,7 @@ BR2_ENABLE_LOCALE_WHITELIST="C en_US"
 BR2_GENERATE_LOCALE=""
 # BR2_TARGET_TZ_INFO is not set
 BR2_ROOTFS_USERS_TABLES=""
-BR2_ROOTFS_OVERLAY=""
+BR2_ROOTFS_OVERLAY="system/overlay-rpi_initramfs_e2fsck_defconfig"
 BR2_ROOTFS_POST_BUILD_SCRIPT="board/raspberrypi2/post-build.sh"
 BR2_ROOTFS_POST_FAKEROOT_SCRIPT=""
 BR2_ROOTFS_POST_IMAGE_SCRIPT="board/raspberrypi2/post-image.sh"
@@ -438,7 +438,7 @@ BR2_LINUX_KERNEL_INTREE_DTS_NAME="bcm2709-rpi-2-b"
 # Target packages
 #
 BR2_PACKAGE_BUSYBOX=y
-BR2_PACKAGE_BUSYBOX_CONFIG="package/busybox/busybox.config"
+BR2_PACKAGE_BUSYBOX_CONFIG="package/busybox/busyboxrpi_initramfs_e2fsck_defconfig.config"
 BR2_PACKAGE_BUSYBOX_CONFIG_FRAGMENT_FILES=""
 # BR2_PACKAGE_BUSYBOX_SHOW_OTHERS is not set
 # BR2_PACKAGE_BUSYBOX_SELINUX is not set
