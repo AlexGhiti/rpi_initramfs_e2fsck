@@ -15,6 +15,14 @@ into the kernel image ensures that even if the root partition is corrupted,
 e2fsck is able to be launched and fix the root partition since everything is
 in RAM and /boot partition should never be corrupted.
 
+WHAT IS INSIDE THE REPO ?
+
+* rpi_initramfs_e2fsck_defconfig: Config used by buildroot.
+* overlay-rpi_initramfs_e2fsck_defconfig: Contains a rootfs overlay (In short,
+Buildroot builds the initramfs and the init in this directory will overwrite the
+/init).
+* busybox-rpi_initramfs_e2fsck.config: Config used by busybox.
+
 HOW TO COMPILE NEW KERNEL ?
 
 1/ Use buildroot to generate kernel + initramfs
@@ -66,4 +74,3 @@ TODO
 PROBLEMS
 
 If any problem, please file an issue, I will update the README accordingly.
-
