@@ -13,7 +13,7 @@ http://raspberrypi.stackexchange.com/questions/10489/how-does-raspberry-pi-boot
 for further explanations on raspberry pi boot process): embedding an initramfs
 into the kernel image ensures that even if the root partition is corrupted,
 e2fsck is able to be launched and fix the root partition since everything is
-in RAM...
+in RAM and /boot partition should never be corrupted.
 
 HOW TO COMPILE NEW KERNEL ?
 
@@ -31,7 +31,7 @@ $ git clone git://git.busybox.net/buildroot
       In my case, it is /dev/sda1, to check yours, log into your raspberry,
       type "df -h" and note which partition is mounted on "/".
 
-3/ Go into root buildroot directory
+3/ Go into buildroot/ directory
 $ make O=build rpi_initramfs_e2fsck_defconfig
 
 4/ A build/ directory has been generated, go into this directory
