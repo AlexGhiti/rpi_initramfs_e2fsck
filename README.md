@@ -1,11 +1,15 @@
 WHAT IS IT ?
 
+^^^^^^^^^^^^
+
 I had problems with power failures, and everytime my raspberry would not boot
 after such problem because my root partition on my external HDD was 'corrupted'.
 The only way I found to fix that is to create a new kernel image that embeds
 a small initramfs that contains e2fsck and that checks my root partition.
 
 HOW DOES THAT EVEN WORK ?
+
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The raspberry pi kernel is in a /boot partition, loaded in RAM by the
 bootloader (cf
@@ -17,6 +21,8 @@ in RAM and /boot partition should never be corrupted.
 
 WHAT IS INSIDE THE REPO ?
 
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
 * rpi_initramfs_e2fsck_defconfig: Config used by buildroot.
 * overlay-rpi_initramfs_e2fsck_defconfig: Contains a rootfs overlay (In short,
 Buildroot builds the initramfs and the init in this directory will overwrite the
@@ -25,47 +31,55 @@ Buildroot builds the initramfs and the init in this directory will overwrite the
 
 HOW TO COMPILE NEW KERNEL ?
 
-1/ Use buildroot to generate kernel + initramfs
-$ git clone git://git.busybox.net/buildroot
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-2/ a/ Copy rpi_initramfs_e2fsck_defconfig file into buildroot/configs
+1/ Use buildroot to generate kernel + initramfs
+
+```$ git clone git://git.busybox.net/buildroot```
+
+2/ 
+   a/ Copy rpi_initramfs_e2fsck_defconfig file into buildroot/configs
+
    b/ Copy busybox-rpi_initramfs_e2fsck_defconfig file into
-      buildroot/package/busybox/
+   buildroot/package/busybox/
+      
    c/ Copy overlay-rpi_initramfs_e2fsck_defconfig directory into
-      buildroot/system/
-      IMPORTANT: You must edit init file in
-      overlay-rpi_initramfs_e2fsck_defconfig directory in order to give the right
-      partition to e2fsck (ie the rootfs partition of your disk/sd card...).
-      In my case, it is /dev/sda1, to check yours, log into your raspberry,
-      type "df -h" and note which partition is mounted on "/".
+   buildroot/system/
+   IMPORTANT: You must edit init file in
+   overlay-rpi_initramfs_e2fsck_defconfig directory in order to give the right
+   partition to e2fsck (ie the rootfs partition of your disk/sd card...).
+   In my case, it is /dev/sda1, to check yours, log into your raspberry,
+   type "df -h" and note which partition is mounted on "/".
 
 3/ Go into buildroot/ directory
 
-$ make O=build rpi_initramfs_e2fsck_defconfig
+```$ make O=build rpi_initramfs_e2fsck_defconfig```
 
 4/ A build/ directory has been generated, go into this directory
 
-$ cd build/ && make
+```$ cd build/ && make```
 
 5/
-a/ Into build/ directory, you will find the zImage kernel into images/zImage:
-scp this image to your raspberrypi into /boot as kernel7.img.
+   a/ Into build/ directory, you will find the zImage kernel into images/zImage:
+   scp this image to your raspberrypi into /boot as kernel7.img.
 
-$ scp images/zImage root@RASPBERRY_PI_IP:/boot/kernel7.img 
+```$ scp images/zImage root@RASPBERRY_PI_IP:/boot/kernel7.img ```
 
 Note: Before doing this, you may want to save kernel7.img in case your raspberry
-does not boot correctly.
+   does not boot correctly.
 
+   b/ You must also send all the newly built modules to /lib/modules/ of the
+   raspberry. This is important as the kernel version is likely to change and
+   modules are built against a certain kernel version.
 
-b/ You must also send all the newly built modules to /lib/modules/ of the
-raspberry. This is important as the kernel version is likely to change and
-modules are built against a certain kernel version.
-$ scp -r build/target/lib/modules/KERNEL_VERSION/ root@RASPBERRY_PI_IP:/lib/modules/
+```$ scp -r build/target/lib/modules/KERNEL_VERSION/ root@RASPBERRY_PI_IP:/lib/modules/```
 
 6/ Finally, reboot, and you should see e2fsck checking your root partition
-in dmesg :)
+   in dmesg :)
 
 TODO
+
+^^^^
 
 1/ Improve init script:
 
@@ -79,5 +93,7 @@ TODO
 2/ Minimize busybox size.
 
 PROBLEMS
+
+^^^^^^^^
 
 If any problem, please file an issue, I will update the README accordingly.
