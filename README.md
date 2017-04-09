@@ -40,19 +40,24 @@ $ git clone git://git.busybox.net/buildroot
       type "df -h" and note which partition is mounted on "/".
 
 3/ Go into buildroot/ directory
+
 $ make O=build rpi_initramfs_e2fsck_defconfig
 
 4/ A build/ directory has been generated, go into this directory
+
 $ cd build/ && make
 
-5/ a/ Into build/ directory, you will find the zImage kernel into images/zImage:
+5/
+a/ Into build/ directory, you will find the zImage kernel into images/zImage:
 scp this image to your raspberrypi into /boot as kernel7.img.
+
 $ scp images/zImage root@RASPBERRY_PI_IP:/boot/kernel7.img 
 
 Note: Before doing this, you may want to save kernel7.img in case your raspberry
 does not boot correctly.
 
-   b/ You must also send all the newly built modules to /lib/modules/ of the
+
+b/ You must also send all the newly built modules to /lib/modules/ of the
 raspberry. This is important as the kernel version is likely to change and
 modules are built against a certain kernel version.
 $ scp -r build/target/lib/modules/KERNEL_VERSION/ root@RASPBERRY_PI_IP:/lib/modules/
@@ -63,8 +68,10 @@ in dmesg :)
 TODO
 
 1/ Improve init script:
+
    a/ USB hdd might take some time to be discovered by the
    kernel, for the moment, I put a "sleep 10" to wait for it to appear...
+   
    b/ Sometimes e2fsck might need human intervention: we could add dropbear
    so that user might be able to log into the raspberry and manually fix the
    issues.
